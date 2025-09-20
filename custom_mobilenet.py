@@ -26,11 +26,17 @@ Tutorial includes:
 """
 
 # Check GPU
-!nvidia-smi
+import subprocess
+try:
+    subprocess.run(['nvidia-smi'], check=True)
+except (subprocess.CalledProcessError, FileNotFoundError):
+    print("GPU not available")
 
 """# Installation"""
 
-!pip -q install tensorflow~=2.14.0 model-compression-toolkit~=2.2.0 imx500-converter[tf]
+# Install required packages
+import subprocess
+subprocess.run(['pip', 'install', '-q', 'tensorflow~=2.14.0', 'model-compression-toolkit~=2.2.0', 'imx500-converter[tf]'], check=True)
 
 # Converter requires java
 import os
@@ -325,14 +331,20 @@ For details see
 * [Sony IMX500 Converter documentation](https://developer.aitrios.sony-semicon.com/en/raspberrypi-ai-camera/documentation/imx500-converter)
 """
 
-!imxconv-tf -i {MODEL_KERAS} -o converted
+# Convert model
+import subprocess
+subprocess.run(['imxconv-tf', '-i', MODEL_KERAS, '-o', 'converted'], check=True)
 
 """
 # Expected output from converter:
 dnnParams.xml		   mobilenet-quant-rps_MemoryReport.json
 mobilenet-quant-rps.pbtxt  packerOut.zip
 """
-!ls converted
+# List converted files
+import os
+print("Converted files:")
+for file in os.listdir('converted'):
+    print(f"  {file}")
 assert os.path.exists("converted/packerOut.zip"), f"Converted file not found"
 
 """# Next step
