@@ -1,4 +1,5 @@
-FROM tensorflow/tensorflow:2.14.0
+ARG TARGETPLATFORM=linux
+FROM --platform=$TARGETPLATFORM tensorflow/tensorflow:2.14.0
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -15,6 +16,9 @@ WORKDIR /tmp/tutorial
 # COPY *py Makefile ./
 
 RUN pip install -U pip && \
-    pip install tensorflow_datasets
+    pip install tensorflow_datasets \
+    pip install model-compression-toolkit==2.2.0 \
+    pip install imx500-converter[tf]
+
 
 # CMD make test-github
