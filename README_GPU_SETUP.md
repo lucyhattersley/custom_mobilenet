@@ -26,7 +26,18 @@ sudo apt-get install -y nvidia-container-toolkit
 
 # Configure Docker
 sudo nvidia-ctk runtime configure --runtime=docker
+
+# Restart Docker (choose the method that works for your setup)
+# Method 1: Traditional Linux Docker service
 sudo systemctl restart docker
+
+# Method 2: If using Docker Desktop, restart Docker Desktop application
+# Method 3: WSL2 - restart Docker Desktop on Windows
+
+# Method 4: If docker.service not found, try:
+sudo service docker restart
+# OR
+sudo /etc/init.d/docker restart
 ```
 
 ### On Windows with Docker Desktop:
@@ -66,7 +77,57 @@ print("GPU Available: ", tf.config.list_physical_devices('GPU'))
 print("Built with CUDA: ", tf.test.is_built_with_cuda())
 ```
 
-## Troubleshooting
+## Troubleshooting Docker Service Issues
+
+### If you get "unit docker.service not found":
+
+**Check your Docker installation type:**
+```bash
+# Check if Docker is running
+docker version
+
+# Check Docker installation method
+which docker
+ps aux | grep docker
+```
+
+**Solutions based on your setup:**
+
+1. **Docker Desktop (Windows/WSL2)**:
+   - Just restart Docker Desktop application on Windows
+   - No need to restart service via command line
+
+2. **Traditional Linux Docker**:
+   ```bash
+   # Try alternative service commands
+   sudo service docker restart
+   # OR
+   sudo /etc/init.d/docker restart
+   ```
+
+3. **Install Docker Engine if missing**:
+   ```bash
+   # Remove old Docker versions
+   sudo apt-get remove docker docker-engine docker.io containerd runc
+   
+   # Install Docker Engine
+   curl -fsSL https://get.docker.com -o get-docker.sh
+   sudo sh get-docker.sh
+   sudo usermod -aG docker $USER
+   
+   # Then restart
+   sudo systemctl restart docker
+   ```
+
+4. **Check if daemon is running without systemd**:
+   ```bash
+   # Check if Docker daemon is running
+   docker info
+   
+   # If working, skip the restart step and continue
+   ```
+
+## Troubleshooting GPU Issues
 
 ### Common Issues:
 
