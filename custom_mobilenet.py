@@ -282,7 +282,7 @@ def visualize_detection(image, cls, score):
     plt.imshow(image)
     plt.text(10, 20, f'{cls}: {score}', color='red')
     plt.axis('off')
-    plt.show()
+    # plt.show() # remove as will hang in headless docker
 
 # Visualize detection results for some images
 for sample in test_ds[0].take(4):
