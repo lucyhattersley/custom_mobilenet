@@ -301,7 +301,7 @@ For details see
 
 # Convert model
 import subprocess
-subprocess.run(['imxconv-tf', '-i', MODEL_KERAS, '-o', 'converted'], check=True)
+subprocess.run(['imxconv-tf', '-i', MODEL_KERAS, '-o', 'converted', '--overwrite-output'], check=True)
 
 """
 # Expected output from converter:
