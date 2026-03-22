@@ -17,6 +17,7 @@ WORKDIR /app
 
 RUN pip install -U pip --no-cache-dir && \
     pip install --no-cache-dir \
+    importlib_resources \
     tensorflow_datasets==4.9.* \
     model-compression-toolkit==2.2.0 \
     imx500-converter[tf]
