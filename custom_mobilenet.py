@@ -215,39 +215,38 @@ quantized_model.compile(loss=keras.losses.SparseCategoricalCrossentropy(), metri
 quantized_model.evaluate(validation_ds)
 
 """# Visualize detections"""
+# # Disabled as we are running in headless docker container
 
-import matplotlib.pyplot as plt
-# Load the test part of the dataset
-test_ds, info = tfds.load(dataset_name, split=["test"], with_info=True)
-print(info)
+# import matplotlib.pyplot as plt
+# # Load the test part of the dataset
+# test_ds, info = tfds.load(dataset_name, split=["test"], with_info=True)
+# print(info)
 
-# Preprocess the input image for inference
-# Disabled as we are running in headless docker
-
+# # Preprocess the input image for inference
 # def preprocess_image_visualization(image):
 #     image = tf.image.resize(image, (224, 224))
 #     image = tf.keras.applications.mobilenet_v2.preprocess_input(image)
 #     return image
 
-# Perform detection on the input image
+# # Perform detection on the input image
 # def detect_objects(model, image):
 #     image = np.expand_dims(image, axis=0)
 #     predictions = model.predict(image)
 #     return predictions
 
-# Get the class label and confidence score of the detected objects
+# # Get the class label and confidence score of the detected objects
 # def get_top_prediction(predictions):
 #     top_idx = np.argsort(predictions)[0][-1]
 #     top_score = predictions[0][top_idx]
 #     top_class = class_names[top_idx]
 #     return top_class, top_score
 
-# Visualize the detections
+# # Visualize the detections
 # def visualize_detection(image, cls, score):
 #     plt.imshow(image)
 #     plt.text(10, 20, f'{cls}: {score}', color='red')
 #     plt.axis('off')
-#     plt.show() # remove as will hang in headless docker
+#     plt.show()
 
 # Visualize detection results for some images
 for sample in test_ds[0].take(4):
