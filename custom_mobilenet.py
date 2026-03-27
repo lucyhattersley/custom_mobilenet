@@ -1,33 +1,32 @@
-# Check GPU
-import subprocess
-try:
-    subprocess.run(['nvidia-smi'], check=True)
-except (subprocess.CalledProcessError, FileNotFoundError):
-    print("GPU not available")
+import os  # models/ directory, list converted outputs, assert packerOut.zip exists
+import subprocess  # optional nvidia-smi probe; imxconv-tf conversion subprocess
+from typing import Generator  # type hints for representative-dataset generator
 
-# Converter requires java
-import os
-import re
-import subprocess
+import keras  # losses/metrics for quantized_model.compile
+import matplotlib.pyplot as plt  # visualize_detection (imshow, labels)
+import model_compression_toolkit as mct  # IMX500 PTQ, TPC, export quantized Keras model
+import numpy as np  # batch dims and arg-sorting predictions in visualization helpers
+import tensorflow as tf  # data pipeline, augmentation, training, optimizers, callbacks
+import tensorflow_datasets as tfds  # load rock_paper_scissors train/test splits
+from keras.applications import MobileNetV2  # ImageNet backbone for transfer learning
+from keras.layers import Dense, GlobalAveragePooling2D  # classification head on frozen base
+from keras.models import Model  # functional API model wrapping base + head
+from model_compression_toolkit.core import QuantizationErrorMethod  # MSE option in QuantizationConfig
 
-MODELS_DIR = 'models/'
-if not os.path.exists(MODELS_DIR):
-    os.mkdir(MODELS_DIR)
+# Model directories
+MODELS_DIR = 'models/'  # directory for saved models and converted outputs
+if not os.path.exists(MODELS_DIR):  # check if directory exists
+    os.mkdir(MODELS_DIR)  # create directory if it doesn't exist
 
-MODEL = MODELS_DIR + 'mobilenet-rps'
-MODEL_KERAS = MODELS_DIR + 'mobilenet-quant-rps.keras'
+MODEL = MODELS_DIR + 'mobilenet-rps'  # full path to saved mode l
+MODEL_KERAS = MODELS_DIR + 'mobilenet-quant-rps.keras'  # full path to quantized Keras model
 
-BATCH_SIZE = 32
-IMAGE_SHAPE = (224, 224)
+BATCH_SIZE = 32  # batch size for training and validation
+IMAGE_SHAPE = (224, 224)  # input shape for MobileNetV2 (height, width)
 
 """# Dataset
 We will use the RPS dataset from [TensorFlow Datasets](https://www.tensorflow.org/datasets/catalog/rock_paper_scissors)
 """
-
-import tensorflow as tf
-import tensorflow_datasets as tfds
-import numpy as np
-import keras
 
 # Load the RPS dataset
 dataset_name = "rock_paper_scissors"
@@ -69,10 +68,6 @@ train_ds = train_ds.prefetch(tf.data.experimental.AUTOTUNE)
 validation_ds = validation_ds.prefetch(tf.data.experimental.AUTOTUNE)
 
 """# Keras Mobilenetv2 model for transfer learning"""
-
-from keras.applications import MobileNetV2
-from keras.layers import Dense, GlobalAveragePooling2D
-from keras.models import Model
 
 base_model =  MobileNetV2(weights='imagenet', include_top=False, input_shape=IMAGE_SHAPE+(3,))
 
@@ -151,8 +146,6 @@ Observe that we are using training part of the dataset as representative dataset
 
 """
 
-from typing import Generator
-
 n_iter=10
 
 # Create representative dataset generator
@@ -177,9 +170,6 @@ def get_representative_dataset() -> Generator:
 
 # Create a representative dataset generator
 representative_dataset_gen = get_representative_dataset()
-
-import model_compression_toolkit as mct
-from model_compression_toolkit.core import QuantizationErrorMethod
 
 # Specify the IMX500-v1 target platform capability (TPC)
 tpc = mct.get_target_platform_capabilities("tensorflow", 'imx500', target_platform_version='v1')
@@ -216,7 +206,6 @@ quantized_model.evaluate(validation_ds)
 """# Visualize detections"""
 # # Disabled as we are running in headless docker container
 
-import matplotlib.pyplot as plt
 # Load the test part of the dataset
 test_ds, info = tfds.load(dataset_name, split=["test"], with_info=True)
 print(info)
@@ -272,7 +261,6 @@ dnnParams.xml		   mobilenet-quant-rps_MemoryReport.json
 mobilenet-quant-rps.pbtxt  packerOut.zip
 """
 # List converted files
-import os
 print("Converted files:")
 for file in os.listdir('converted'):
     print(f"  {file}")
