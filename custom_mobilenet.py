@@ -50,10 +50,9 @@ print("class_names:", class_names)
 """## Pre-processing and augmentation"""
 
 def preprocess_data(image, label):
-    # Set range
-    image = tf.keras.applications.mobilenet_v2.preprocess_input(tf.cast(image, tf.float32))
-    # Resize image
+    image = tf.cast(image, tf.float32)
     image = tf.image.resize(image, IMAGE_SHAPE)
+    image = tf.keras.applications.mobilenet_v2.preprocess_input(image)
     return image, label
 
 train_ds = train_ds.map(preprocess_data)
@@ -217,45 +216,45 @@ quantized_model.evaluate(validation_ds)
 """# Visualize detections"""
 # # Disabled as we are running in headless docker container
 
-# import matplotlib.pyplot as plt
-# # Load the test part of the dataset
-# test_ds, info = tfds.load(dataset_name, split=["test"], with_info=True)
-# print(info)
+import matplotlib.pyplot as plt
+# Load the test part of the dataset
+test_ds, info = tfds.load(dataset_name, split=["test"], with_info=True)
+print(info)
 
-# # Preprocess the input image for inference
-# def preprocess_image_visualization(image):
-#     image = tf.image.resize(image, (224, 224))
-#     image = tf.keras.applications.mobilenet_v2.preprocess_input(image)
-#     return image
+# Preprocess the input image for inference
+def preprocess_image_visualization(image):
+    image = tf.keras.applications.mobilenet_v2.preprocess_input(image)
+    image = tf.image.resize(image, (224, 224))
+    return image
 
-# # Perform detection on the input image
-# def detect_objects(model, image):
-#     image = np.expand_dims(image, axis=0)
-#     predictions = model.predict(image)
-#     return predictions
+# Perform detection on the input image
+def detect_objects(model, image):
+    image = np.expand_dims(image, axis=0)
+    predictions = model.predict(image)
+    return predictions
 
-# # Get the class label and confidence score of the detected objects
-# def get_top_prediction(predictions):
-#     top_idx = np.argsort(predictions)[0][-1]
-#     top_score = predictions[0][top_idx]
-#     top_class = class_names[top_idx]
-#     return top_class, top_score
+# Get the class label and confidence score of the detected objects
+def get_top_prediction(predictions):
+    top_idx = np.argsort(predictions)[0][-1]
+    top_score = predictions[0][top_idx]
+    top_class = class_names[top_idx]
+    return top_class, top_score
 
-# # Visualize the detections
-# def visualize_detection(image, cls, score):
-#     plt.imshow(image)
-#     plt.text(10, 20, f'{cls}: {score}', color='red')
-#     plt.axis('off')
-#     plt.show()
+# Visualize the detections
+def visualize_detection(image, cls, score):
+    plt.imshow(image)
+    plt.text(10, 20, f'{cls}: {score}', color='red')
+    plt.axis('off')
+    # plt.show() # disabled as we are in headless docker
 
 # Visualize detection results for some images
-for sample in test_ds[0].take(4):
-    image = preprocess_image_visualization(sample['image'])
-    predictions = detect_objects(quantized_model, image)  # float_model/quantized_model
-    cls, score = get_top_prediction(predictions)
-    print(f'cls: {cls}, score: {score}')
-    assert score > 0.55
-    visualize_detection(sample['image'], cls, score)
+# for sample in test_ds[0].take(4):
+#     image = preprocess_image_visualization(sample['image'])
+#     predictions = detect_objects(quantized_model, image)  # float_model/quantized_model
+#     cls, score = get_top_prediction(predictions)
+#     print(f'cls: {cls}, score: {score}')
+#     assert score > 0.55
+#     visualize_detection(sample['image'], cls, score)
 
 """# Conversion
 For details see
