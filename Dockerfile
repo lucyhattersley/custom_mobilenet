@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install --fix-missing -y \
     nano \
     wget \
     tree \
-    openjdk \
+    default-jdk \
     ffmpeg \
     libsm6 \
     libxext6 \
