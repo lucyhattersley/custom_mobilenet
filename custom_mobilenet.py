@@ -1,4 +1,3 @@
-
 # Check GPU
 import subprocess
 try:
@@ -10,7 +9,6 @@ except (subprocess.CalledProcessError, FileNotFoundError):
 import os
 import re
 import subprocess
-import os
 
 MODELS_DIR = 'models/'
 if not os.path.exists(MODELS_DIR):
