@@ -3,11 +3,11 @@ FROM arm64v8/python:3.10-slim
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install --fix-missing -y \
-    libgl1-mesa-glx \
+    libgl1 \
     nano \
     wget \
     tree \
-    openjdk-17-jdk \
+    openjdk \
     ffmpeg \
     libsm6 \
     libxext6 \
