@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:2.14.0-gpu
+FROM arm64v8/python:3.10-slim
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install --fix-missing -y \
 WORKDIR /app
 
 RUN pip install -U pip --no-cache-dir && \
+    pip install --no-cache-dir \
+    tensorflow==2.14.0 \
+    --extra-index-url https://pkgs.raspberrypi.com/python && \
     pip install --no-cache-dir \
     importlib_resources \
     tensorflow_datasets==4.9.* \

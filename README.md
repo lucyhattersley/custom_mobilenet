@@ -1,3 +1,7 @@
+# Install Docker
+# Step 3 of Install Docker (for Open WebUI) on Raspberry Pi Documentation
+https://www.raspberrypi.com/documentation/computers/ai.html#step3-llm
+
 # Build the Docker image
 docker build -t mobilenet .
 
