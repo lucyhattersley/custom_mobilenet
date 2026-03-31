@@ -32,6 +32,6 @@ RUN pip install -U pip --no-cache-dir && \
 #     chown -R appuser:appuser /app
 
 # Switch to non-root user
-USER appuser
+# USER appuser
 
 COPY custom_mobilenet.py /app/
