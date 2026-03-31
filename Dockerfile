@@ -25,11 +25,11 @@ RUN pip install -U pip --no-cache-dir && \
     model-compression-toolkit==2.2.0 \
     imx500-converter[tf]
 
-# Create a non-root user with UID/GID 1000
-RUN groupadd -g 1000 appuser && \
-    useradd -m -u 1000 -g 1000 appuser && \
-    mkdir -p /app/models /app/converted && \
-    chown -R appuser:appuser /app
+# # Create a non-root user with UID/GID 1000
+# RUN groupadd -g 1000 appuser && \
+#     useradd -m -u 1000 -g 1000 appuser && \
+#     mkdir -p /app/models /app/converted && \
+#     chown -R appuser:appuser /app
 
 # Switch to non-root user
 USER appuser
