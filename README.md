@@ -46,8 +46,8 @@ Start a container and mount outputs so artifacts persist on host:
 
 ```bash
 docker run -it --name mobilenet \
-  -v "$HOME/Programs/custom_mobilenet/output/models:/app/models" \
-  -v "$HOME/Programs/custom_mobilenet/output/converted:/app/converted" \
+  -v "$(pwd)/output/models:/app/models" \
+  -v "$(pwd)/output/converted:/app/converted" \
   mobilenet bash
 ```
 
